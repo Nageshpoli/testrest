@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<TITLE>Project Test Execution Report</TITLE>
+</HEAD>
+
+
+<BODY>
+	<CENTER>
+
+		<TABLE>
+			#set( $suitev = $Suites.values().toArray() ) 
+			#set( $suitek =	$Suites.keySet().toArray() ) 
+			
+			#foreach($s1 in $suitek)
+			<TR>
+				<TD>$s1</TD>
+			</TR>
+			#end
+			
+			#foreach($s in $suitev)
+			<TR>
+				
+						<TABLE>
+							#set( $tv = $s.values().toArray() ) 
+							#set( $tk =	$s.keySet().toArray() ) 
+							
+							#foreach($tn in $tk)
+							<TR>
+								<TD>$tn</TD>
+							</TR>
+							#end
+							
+							#foreach($tl in $tv)
+							<TR>
+								<TD>$tl.size()</TD>
+							</TR>
+							#end 
+				
+						</TABLE>
+		
+			</TR>
+			#end 
+
+		</TABLE>
+
+
+	</CENTER>
+
+</BODY>
+</HTML>

@@ -1,49 +1,51 @@
 <HTML>
 <HEAD>
 <TITLE>Project Test Execution Report</TITLE>
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+</style>
 </HEAD>
 
 
 <BODY>
 	<CENTER>
-
 		<TABLE>
-			#set( $suitev = $Suites.values().toArray() ) 
-			#set( $suitek =	$Suites.keySet().toArray() ) 
-			
-			#foreach($s1 in $suitek)
+			#foreach($suiteName in ${Suites.keySet()})
 			<TR>
-				<TD>$s1</TD>
+				<TD>$suiteName</TD>
 			</TR>
-			#end
-			
-			#foreach($s in $suitev)
 			<TR>
-				
-						<TABLE>
-							#set( $tv = $s.values().toArray() ) 
-							#set( $tk =	$s.keySet().toArray() ) 
-							
-							#foreach($tn in $tk)
-							<TR>
-								<TD>$tn</TD>
-							</TR>
-							#end
-							
-							#foreach($tl in $tv)
-							<TR>
-								<TD>$tl.size()</TD>
-							</TR>
-							#end 
-				
-						</TABLE>
-		
+			#foreach($TestContexts in $Suites.get($suiteName))
+			<TR>
+			<TABLE>
+				#foreach($TestContext in ${TestContexts.keySet()})
+				<TR>
+				<TD>$TestContext</TD>
+				</TR>
+				<TR>
+					#foreach($Test in $TestContexts.get($TestContext))
+						<TD> $Test </TD>
+					#end
+				</TR>
+				#end
+			</TABLE>
 			</TR>
 			#end 
-
+			</TR>
+			#end
 		</TABLE>
-
-
 	</CENTER>
 
 </BODY>

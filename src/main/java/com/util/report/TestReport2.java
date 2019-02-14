@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -52,7 +54,11 @@ public class TestReport2 implements IReporter {
         Map Suites = new HashMap();
         
         Map TestContexts = new HashMap();
-        ArrayList TestContext = new ArrayList();
+        Map<String,Set> TestContext = new HashMap<>();
+        
+        Set passedTests = new HashSet();
+        Set FailedTests = new HashSet();
+        Set skippedTests = new HashSet();
         
         
         //*************************//
@@ -69,59 +75,55 @@ public class TestReport2 implements IReporter {
 			for (ISuiteResult sr : suiteResults.values()) {
 				ITestContext tc = sr.getTestContext();
 				String testName = tc.getName();
+				int totalMethods = tc.getAllTestMethods().length;
 				
 				for (ITestNGMethod m : tc.getAllTestMethods()) {
 					System.out.println(m.getMethodName());
 //					System.out.println(m.getCurrentInvocationCount());
 
-					Iterator<ITestResult> pi = tc.getPassedTests().getResults(m).iterator();
-					while (pi.hasNext()) {
-						ITestResult ir = (ITestResult) pi.next();
-						System.out.println(statusFomat(ir.getStatus()));
-						
-						List<String> output = Reporter.getOutput(ir);
-				        if (null != output && output.size() > 0) {
-				          for (String s : output) {
-				            System.out.println(s);
-				          }
-				        }
-					}
-
-					Iterator<ITestResult> fi = tc.getFailedTests().getResults(m).iterator();
-					while (fi.hasNext()) {
-						ITestResult ir = (ITestResult) fi.next();
-						System.out.println(statusFomat(ir.getStatus()));
-					}
-
-					Iterator<ITestResult> si = tc.getSkippedTests().getResults(m).iterator();
-					while (si.hasNext()) {
-						ITestResult ir = (ITestResult) si.next();
-						System.out.println(statusFomat(ir.getStatus()));
-					}
+					passedTests.addAll(tc.getPassedTests().getResults(m));
 					
-					Iterator<ITestResult> spi = tc.getFailedButWithinSuccessPercentageTests().getResults(m).iterator();
-					while (spi.hasNext()) {
-						ITestResult ir = (ITestResult) spi.next();
-						System.out.println(statusFomat(ir.getStatus()));
-					}
-					
-//					Iterator<ITestResult> spi1 = tc.getPassedTests().getResults(m).iterator();
-//					while (spi1.hasNext()) {
-//						ITestResult ir1 = (ITestResult) spi1.next();
-//						System.out.println(statusFomat(ir1.));
+//					Iterator pi = passedTests.iterator();
+//					while (pi.hasNext()) {
+//						ITestResult ir = (ITestResult) pi.next();
+//						ir.getName()
+//						System.out.println(statusFomat(ir.getStatus()));
+//						
+//						List<String> output = Reporter.getOutput(ir);
+//				        if (null != output && output.size() > 0) {
+//				          for (String s : output) {
+//				            System.out.println(s);
+//				          }
+//				        }
 //					}
 
-					// System.out.println(tc.getFailedConfigurations().getResults(m).toString());
+					FailedTests.addAll(tc.getFailedTests().getResults(m));
+					skippedTests.addAll(tc.getSkippedTests().getResults(m));
+//					Set<ITestResult> spi = tc.getFailedButWithinSuccessPercentageTests().getResults(m);
+//					List<String> output = Reporter.getOutput(ir);
 					
-			        /*
-			         *  add that list to a VelocityContext
-			         */
-			       
+//					TestContext.put("methodName", m.getMethodName());
+					
+
+					
+//					HashSet sp = (HashSet)TestContext.get("passedTests");
+//					Iterator its = sp.iterator();
+//					while(its.hasNext())
+//					{
+//						System.out.println("sssssssssssss  "+ its.next());
+//					}
 			        
 				}
+				TestContext.put("FailedTests", FailedTests);
+				TestContext.put("passedTests", passedTests);
+				TestContext.put("skippedTests", skippedTests);
+//				TestContexts.put("totalMethods", totalMethods);
+				TestContexts.put(testName.toString()+"", TestContext);
 			}
 			
+//			Suites.put("suiteName", suiteName);
 			Suites.put(suiteName, TestContexts);
+			
 			
 		}
 		

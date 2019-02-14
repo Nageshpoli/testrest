@@ -8,7 +8,7 @@ public class RetryFailedTests implements IRetryAnalyzer{
 	int retrycount=0;
 	public boolean retry(ITestResult result) {
 		
-		if(retrycount<3)
+		if(retrycount<2)
 		{
 			retrycount++;
 			return true;

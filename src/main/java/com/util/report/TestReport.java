@@ -54,7 +54,7 @@ public class TestReport implements IReporter {
         Map Suites = new HashMap();
         
         Map TestContexts = new HashMap();
-        Map TestContext = new HashMap();
+        Map<String,Set> TestContext = new HashMap<>();
         
         Set passedTests = new HashSet();
         Set FailedTests = new HashSet();
@@ -81,9 +81,12 @@ public class TestReport implements IReporter {
 					System.out.println(m.getMethodName());
 //					System.out.println(m.getCurrentInvocationCount());
 
-					passedTests = tc.getPassedTests().getResults(m);
+					passedTests.addAll(tc.getPassedTests().getResults(m));
+					
+//					Iterator pi = passedTests.iterator();
 //					while (pi.hasNext()) {
 //						ITestResult ir = (ITestResult) pi.next();
+//						ir.getName()
 //						System.out.println(statusFomat(ir.getStatus()));
 //						
 //						List<String> output = Reporter.getOutput(ir);
@@ -94,23 +97,33 @@ public class TestReport implements IReporter {
 //				        }
 //					}
 
-					FailedTests = tc.getFailedTests().getResults(m);
-					skippedTests = tc.getSkippedTests().getResults(m);
+					FailedTests.addAll(tc.getFailedTests().getResults(m));
+					skippedTests.addAll(tc.getSkippedTests().getResults(m));
 //					Set<ITestResult> spi = tc.getFailedButWithinSuccessPercentageTests().getResults(m);
 //					List<String> output = Reporter.getOutput(ir);
 					
-					TestContext.put("methodName", m.getMethodName());
-					TestContext.put("passedTests", passedTests);
-					TestContext.put("FailedTests", FailedTests);
-					TestContext.put("skippedTests", skippedTests);
+//					TestContext.put("methodName", m.getMethodName());
+					
+
+					
+//					HashSet sp = (HashSet)TestContext.get("passedTests");
+//					Iterator its = sp.iterator();
+//					while(its.hasNext())
+//					{
+//						System.out.println("sssssssssssss  "+ its.next());
+//					}
 			        
 				}
-				TestContexts.put("totalMethods", totalMethods);
-				TestContexts.put(testName, TestContext);
+				TestContext.put("FailedTests", FailedTests);
+				TestContext.put("passedTests", passedTests);
+				TestContext.put("skippedTests", skippedTests);
+//				TestContexts.put("totalMethods", totalMethods);
+				TestContexts.put(testName.toString()+"", TestContext);
 			}
 			
 //			Suites.put("suiteName", suiteName);
-			Suites.put(suiteName, TestContexts);	
+			Suites.put(suiteName, TestContexts);
+			
 			
 		}
 		
